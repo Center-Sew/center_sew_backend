@@ -1,197 +1,144 @@
-# Estrutura completa do backend com FastAPI, MongoDB, JWT e boas práticas
+Claro! Aqui está uma versão aprimorada e mais organizada do seu `README.md`, com seções bem definidas, formatação adequada em Markdown e explicações concisas para cada parte do projeto. Também inclui um toque de clareza para desenvolvedores que lerem pela primeira vez:
 
-# Requisitos
-# - Autenticação segura por email/senha (JWT)
-# - CRUD de solicitações de serviço
-# - Acompanhamento de status: Em andamento, Concluído, Atrasado
-# - Detalhes de prestadores de serviço
-# - Perfil da conta atual com segurança
+---
 
-# Estrutura do projeto
-# backend/
-# ├── app/
-# │   ├── main.py
-# │   ├── auth/
-# │   │   ├── auth_handler.py
-# │   │   └── auth_bearer.py
-# │   ├── database/
-# │   │   └── mongo.py
-# │   ├── models/
-# │   │   ├── user.py
-# │   │   ├── service.py
-# │   │   └── prestador.py
-# │   ├── routes/
-# │   │   ├── auth.py
-# │   │   ├── services.py
-# │   │   ├── profile.py
-# │   │   └── prestador.py
-# └── requirements.txt
+# 🧵 Conecta Costura - Backend
 
-# app/main.py
-from fastapi import FastAPI
-from app.routes import auth, services, profile, prestador
+API completa desenvolvida com **FastAPI** e **MongoDB**, seguindo boas práticas e segurança com **JWT**. Ideal para aplicações que conectam empresas e prestadores de serviços de costura.
 
-app = FastAPI()
+---
 
-# Rotas
-app.include_router(auth.router, prefix="/auth", tags=["auth"])
-app.include_router(services.router, prefix="/services", tags=["services"])
-app.include_router(profile.router, prefix="/profile", tags=["profile"])
-app.include_router(prestador.router, prefix="/prestador", tags=["prestador"])
+## ✅ Funcionalidades
 
-@app.get("/")
-def home():
-    return {"msg": "API Conecta Costura"}
+- 🔐 Autenticação segura por e-mail/senha com JWT  
+- 🧾 CRUD de solicitações de serviço  
+- ⏱ Acompanhamento de status de solicitações: `Em andamento`, `Concluído`, `Atrasado`  
+- 👩‍🔧 Consulta de detalhes de prestadores de serviço  
+- 👤 Perfil da conta autenticada com proteção de acesso  
 
-# app/auth/auth_handler.py
-import jwt
-from datetime import datetime, timedelta
-from passlib.context import CryptContext
+---
 
-SECRET_KEY = "supersecret"
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+## 📁 Estrutura do Projeto
 
-def sign_jwt(user_id):
-    payload = {
-        "user_id": user_id,
-        "exp": datetime.utcnow() + timedelta(hours=12)
-    }
-    return jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+```
+backend/
+├── app/
+│   ├── main.py                     # Entrada da aplicação FastAPI
+│   ├── auth/
+│   │   ├── auth_handler.py         # Lógica JWT e hashing de senhas
+│   │   └── auth_bearer.py          # Middleware para proteger rotas com JWT
+│   ├── database/
+│   │   └── mongo.py                # Conexão com MongoDB via pymongo
+│   ├── models/
+│   │   ├── user.py                 # Modelos de usuário
+│   │   ├── service.py              # Modelos de solicitação de serviço
+│   │   └── prestador.py            # Modelos de prestadores
+│   ├── routes/
+│   │   ├── auth.py                 # Rotas de login e registro
+│   │   ├── services.py             # Rotas de CRUD de serviços
+│   │   ├── profile.py              # Rota para obter perfil logado
+│   │   └── prestador.py            # Rota para consultar prestadores
+└── requirements.txt                # Dependências Python
+```
 
-def decode_jwt(token):
-    try:
-        return jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-    except:
-        return None
+---
 
-def hash_password(password):
-    return pwd_context.hash(password)
+## 🚀 Execução
 
-def verify_password(plain_password, hashed):
-    return pwd_context.verify(plain_password, hashed)
+### 1. Clonar o projeto
 
-# app/auth/auth_bearer.py
-from fastapi import Request, HTTPException
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from .auth_handler import decode_jwt
+```bash
+git clone https://github.com/seu-usuario/seu-projeto.git
+cd backend
+```
 
-class JWTBearer(HTTPBearer):
-    async def __call__(self, request: Request):
-        credentials: HTTPAuthorizationCredentials = await super().__call__(request)
-        if credentials:
-            token = credentials.credentials
-            if decode_jwt(token):
-                return credentials.credentials
-            raise HTTPException(status_code=403, detail="Token inválido")
-        raise HTTPException(status_code=403, detail="Token não encontrado")
+### 2. Instalar dependências
 
-# app/models/user.py
-from pydantic import BaseModel, EmailStr
+```bash
+pip install -r requirements.txt
+```
 
-class User(BaseModel):
-    email: EmailStr
-    password: str
+### 3. Configurar variáveis de ambiente
 
-class UserOut(BaseModel):
-    id: str
-    email: EmailStr
+Crie um arquivo `.env` com:
 
-# app/models/service.py
-from pydantic import BaseModel
-from typing import Optional
+```
+MONGO_URI=mongodb://localhost:27017
+```
 
-class ServiceRequest(BaseModel):
-    titulo: str
-    subtitulo: str
-    descricao: str
-    status: str = "Em andamento"
-    user_id: Optional[str]
+### 4. Rodar o servidor
 
-# app/models/prestador.py
-from pydantic import BaseModel
+```bash
+uvicorn app.main:app --reload
+```
 
-class PrestadorDetalhe(BaseModel):
-    nome: str
-    especialidade: str
-    localizacao: str
+Acesse: [http://localhost:8000](http://localhost:8000)
 
-# app/database/mongo.py
-from pymongo import MongoClient
-import os
-from dotenv import load_dotenv
+---
 
-load_dotenv()
-client = MongoClient(os.getenv("MONGO_URI"))
-db = client["costura"]
+## 🔐 Rotas protegidas
 
-# app/routes/auth.py
-from fastapi import APIRouter, HTTPException
-from app.models.user import User
-from app.auth.auth_handler import sign_jwt, hash_password, verify_password
-from app.database.mongo import db
+Rotas que exigem autenticação JWT (ex: `/services`, `/profile/me`) devem conter o header:
 
-router = APIRouter()
+```
+Authorization: Bearer <seu-token>
+```
 
-@router.post("/register")
-def register(user: User):
-    if db.users.find_one({"email": user.email}):
-        raise HTTPException(status_code=400, detail="Usuário já existe")
-    user_dict = user.dict()
-    user_dict["password"] = hash_password(user.password)
-    db.users.insert_one(user_dict)
-    return sign_jwt(str(user.email))
+---
 
-@router.post("/login")
-def login(user: User):
-    db_user = db.users.find_one({"email": user.email})
-    if db_user and verify_password(user.password, db_user["password"]):
-        return sign_jwt(str(user.email))
-    raise HTTPException(status_code=401, detail="Credenciais inválidas")
+## 🧪 Exemplos de uso (trechos)
 
-# app/routes/services.py
-from fastapi import APIRouter, Depends
-from app.models.service import ServiceRequest
-from app.auth.auth_bearer import JWTBearer
-from app.database.mongo import db
+### 🔑 Registro/Login
 
-router = APIRouter()
+```python
+# POST /auth/register
+{
+  "email": "usuario@exemplo.com",
+  "password": "123456"
+}
 
-@router.post("/", dependencies=[Depends(JWTBearer())])
-def criar_servico(service: ServiceRequest):
-    db.services.insert_one(service.dict())
-    return {"msg": "Serviço criado com sucesso"}
+# POST /auth/login
+{
+  "email": "usuario@exemplo.com",
+  "password": "123456"
+}
+```
 
-@router.get("/", dependencies=[Depends(JWTBearer())])
-def listar_servicos():
-    return list(db.services.find({}, {"_id": 0}))
+Retorna um token JWT válido para chamadas autenticadas.
 
-@router.get("/{titulo}", dependencies=[Depends(JWTBearer())])
-def buscar_por_titulo(titulo: str):
-    return db.services.find_one({"titulo": titulo}, {"_id": 0})
+### 📋 Criar serviço (POST /services)
 
-# app/routes/profile.py
-from fastapi import APIRouter, Depends
-from app.auth.auth_bearer import JWTBearer
-from app.auth.auth_handler import decode_jwt
-from fastapi import Request
-from app.database.mongo import db
+```json
+{
+  "titulo": "Solicitação #001",
+  "subtitulo": "Bordado de logotipo",
+  "descricao": "Aplicação de logotipo em camisas.",
+  "status": "Em andamento"
+}
+```
 
-router = APIRouter()
+---
 
-@router.get("/me", dependencies=[Depends(JWTBearer())])
-def meu_perfil(request: Request):
-    token = request.headers.get("Authorization").split(" ")[1]
-    payload = decode_jwt(token)
-    user = db.users.find_one({"email": payload["user_id"]}, {"_id": 0, "password": 0})
-    return user
+## 🧰 Tecnologias utilizadas
 
-# app/routes/prestador.py
-from fastapi import APIRouter, Depends
-from app.auth.auth_bearer import JWTBearer
-from app.database.mongo import db
+- [FastAPI](https://fastapi.tiangolo.com/)
+- [MongoDB](https://www.mongodb.com/)
+- [PyMongo](https://pymongo.readthedocs.io/)
+- [Passlib](https://passlib.readthedocs.io/) (hash de senhas)
+- JWT com `pyjwt`
 
-router = APIRouter()
+---
 
-@router.get("/{nome}", dependencies=[Depends(JWTBearer())])
-def detalhes_prestador(nome: str):
-    return db.prestadores.find_one({"nome": nome}, {"_id": 0})
+## 📌 Melhorias futuras
+
+- Upload de fotos de portfólio dos prestadores  
+- Integração com localização geográfica  
+- Notificações em tempo real  
+- Filtros por tipo de serviço e região  
+
+---
+
+## 💡 Observações
+
+- A API segue boas práticas de separação de responsabilidades (`routes`, `models`, `auth`, `database`)  
+- Rotas estão organizadas por prefixos e tags para facilitar a documentação automática via Swagger (disponível em `/docs`)
