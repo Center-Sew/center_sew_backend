@@ -1,0 +1,67 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Caches
+.cache/
+coverage/
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.log
+
+# Virtual environment
+venv/
+env/
+ENV/
+.venv/
+
+# VS Code settings
+.vscode/
+
+# Environment variables
+.env
+.env.*
+
+# Python virtual environment files
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Docker
+*.pid
+docker-compose.override.yml
+
+# macOS
+.DS_Store
+
+# Test and debug tools
+.tox/
+.nox/
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Idea (JetBrains)
+.idea/
+
+# Others
+*.sqlite3
+*.db
+temp.txt
