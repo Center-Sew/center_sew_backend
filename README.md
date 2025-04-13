@@ -1,7 +1,3 @@
-Claro! Aqui está uma versão aprimorada e mais organizada do seu `README.md`, com seções bem definidas, formatação adequada em Markdown e explicações concisas para cada parte do projeto. Também inclui um toque de clareza para desenvolvedores que lerem pela primeira vez:
-
----
-
 # 🧵 Conecta Costura - Backend
 
 API completa desenvolvida com **FastAPI** e **MongoDB**, seguindo boas práticas e segurança com **JWT**. Ideal para aplicações que conectam empresas e prestadores de serviços de costura.
