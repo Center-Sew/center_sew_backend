@@ -1,0 +1,72 @@
+[
+  {
+    "nome": "Empresa Têxtil Alpha",
+    "email": "empresa.alpha@centersew.com",
+    "senha": "123456",
+    "tipo": "empresa",
+    "documento": "12.345.678/0001-00",
+    "localizacao": {
+      "cidade": "São Paulo",
+      "estado": "SP",
+      "bairro": "Brás",
+      "tipo": "cidade",
+      "valor": "São Paulo"
+    }
+  },
+  {
+    "nome": "Empresa Confecções Beta",
+    "email": "empresa.beta@centersew.com",
+    "senha": "123456",
+    "tipo": "empresa",
+    "documento": "98.765.432/0001-99",
+    "localizacao": {
+      "cidade": "Campinas",
+      "estado": "SP",
+      "bairro": "Centro",
+      "tipo": "cidade",
+      "valor": "Campinas"
+    }
+  },
+  {
+    "nome": "Costureira Joana",
+    "email": "joana.costura@centersew.com",
+    "senha": "123456",
+    "tipo": "prestador",
+    "documento": "123.456.789-00",
+    "localizacao": {
+      "cidade": "Itapetininga",
+      "estado": "SP",
+      "bairro": "Vila Nova",
+      "tipo": "raio",
+      "valor": "20"
+    }
+  },
+  {
+    "nome": "Costureiro Paulo",
+    "email": "paulo.costura@centersew.com",
+    "senha": "123456",
+    "tipo": "prestador",
+    "documento": "321.654.987-00",
+    "localizacao": {
+      "cidade": "Itapetininga",
+      "estado": "SP",
+      "bairro": "Centro",
+      "tipo": "raio",
+      "valor": "25"
+    }
+  },
+  {
+    "nome": "Costureira Maria",
+    "email": "maria.costura@centersew.com",
+    "senha": "123456",
+    "tipo": "prestador",
+    "documento": "456.789.123-00",
+    "localizacao": {
+      "cidade": "Itapetininga",
+      "estado": "SP",
+      "bairro": "Jardim Itália",
+      "tipo": "raio",
+      "valor": "15"
+    }
+  }
+]

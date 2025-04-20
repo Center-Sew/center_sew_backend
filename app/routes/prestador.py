@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends
 from app.auth.auth_bearer import JWTBearer
-from app.database.mongo import db
 
 router = APIRouter()
 

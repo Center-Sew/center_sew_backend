@@ -1,0 +1,28 @@
+[
+  {
+    "solicitacao_id": "solicitacao123",
+    "empresa_id": "empresa123",
+    "prestador_id": "prestador001",
+    "produto": {
+      "nome": "Uniformes personalizados",
+      "quantidade": 20,
+      "detalhes": "Com bordado personalizado"
+    },
+    "inicio": "2025-04-20T10:00:00",
+    "previsao": "2025-05-05T18:00:00",
+    "status": "em_andamento"
+  },
+  {
+    "solicitacao_id": "solicitacao124",
+    "empresa_id": "empresa123",
+    "prestador_id": "prestador002",
+    "produto": {
+      "nome": "Aventais escolares",
+      "quantidade": 50,
+      "detalhes": "Tecido resistente"
+    },
+    "inicio": "2025-04-21T09:00:00",
+    "previsao": "2025-05-01T17:00:00",
+    "status": "em_andamento"
+  }
+]

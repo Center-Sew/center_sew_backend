@@ -1,6 +1,16 @@
-from pydantic import BaseModel
+from beanie import Document
+from typing import List, Optional
+from app.enums.tipo_fiscal import TipoFiscal
+from app.enums.tipo_servico import TipoServico
+from app.models.localizacao import Localizacao
 
-class PrestadorDetalhe(BaseModel):
+class Prestador(Document):
     nome: str
-    especialidade: str
-    localizacao: str
+    tipo_fiscal: List[TipoFiscal]
+    especialidades: List[TipoServico]
+    localizacao: Localizacao
+    descricao_portfolio: Optional[str] = None
+    disponivel: bool = True
+
+    class Settings:
+        name = "prestadores"

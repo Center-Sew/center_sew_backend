@@ -1,9 +1,11 @@
 fastapi
 uvicorn[standard]
 pydantic[email]
+typer
 python-jose[cryptography]
 passlib[bcrypt]
 bcrypt==3.2.0
+beanie>=1.23.5
 motor
 python-dotenv
 faker

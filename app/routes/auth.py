@@ -1,23 +1,43 @@
-from fastapi import APIRouter, HTTPException
-from app.models.user import User
-from app.auth.auth_handler import sign_jwt, hash_password, verify_password
-from app.database.mongo import db
+from fastapi import APIRouter, HTTPException, status, Depends
+from app.models.usuario import Usuario
+from app.auth.auth_handler import hash_password, verify_password, create_access_token
+from app.schemas.usuario_schema import (  # <- AJUSTE AQUI
+    UsuarioAuthResponse,
+    UsuarioCreate,
+    UsuarioLogin,
+    UsuarioResponse,
+)
 
-router = APIRouter()
+router = APIRouter(tags=["Autenticação"])
 
-@router.post("/register")
-def register(user: User):
-    if db.users.find_one({"email": user.email}):
-        raise HTTPException(status_code=400, detail="Usuário já existe")
-    user_dict = user.dict()
-    user_dict["password"] = hash_password(user.password)
-    db.users.insert_one(user_dict)
-    return sign_jwt(str(user.email))
+@router.post("/register", response_model=UsuarioResponse)
+async def register(usuario: UsuarioCreate):
+    existente = await Usuario.find_one({"email": usuario.email})
+    if existente:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="E-mail já cadastrado."
+        )
 
-@router.post("/login")
-def login(user: User):
-    db_user = db.users.find_one({"email": user.email})
-    if db_user and verify_password(user.password, db_user["password"]):
-        return { "access_token": sign_jwt(str(user.email)) }
-    raise HTTPException(status_code=401, detail="Credenciais inválidas")
+    novo_usuario = Usuario(
+        nome=usuario.nome,
+        email=usuario.email,
+        senha=hash_password(usuario.senha),
+        tipo=usuario.tipo,
+        documento=usuario.documento,
+        localizacao=usuario.localizacao
+    )
+    await novo_usuario.insert()
+    return novo_usuario.model_dump(by_alias=True)
 
+@router.post("/login", response_model=UsuarioAuthResponse)
+async def login(dados: UsuarioLogin):
+    usuario = await Usuario.find_one(Usuario.email == dados.email)
+    if not usuario or not verify_password(dados.senha, usuario.senha):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="E-mail ou senha inválidos."
+        )
+
+    token = create_access_token({"sub": str(usuario.id)})
+    return UsuarioAuthResponse(access_token=token)
