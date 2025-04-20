@@ -1,16 +1,18 @@
 # 🧵 Conecta Costura - Backend
 
-API completa desenvolvida com **FastAPI** e **MongoDB**, seguindo boas práticas e segurança com **JWT**. Ideal para aplicações que conectam empresas e prestadores de serviços de costura.
+API robusta em **FastAPI** + **MongoDB** que conecta empresas e prestadores de serviços de costura. Implementa autenticação segura, gerenciamento de solicitações e perfis, com estrutura modular e escalável.
 
 ---
 
 ## ✅ Funcionalidades
 
-- 🔐 Autenticação segura por e-mail/senha com JWT  
-- 🧾 CRUD de solicitações de serviço  
-- ⏱ Acompanhamento de status de solicitações: `Em andamento`, `Concluído`, `Atrasado`  
-- 👩‍🔧 Consulta de detalhes de prestadores de serviço  
-- 👤 Perfil da conta autenticada com proteção de acesso  
+- 🔐 Autenticação segura com JWT (expiração configurável)
+- 🧾 CRUD completo de solicitações de serviço
+- 🎯 Seleção por perfil desejado (CPF, CNPJ e tipo de serviço)
+- 🧍 Adição de interessados (usuários) em cada solicitação
+- ⏱ Status da solicitação: `aberta`, `em_andamento`, `concluída`, `atrasada`
+- 👤 Gerenciamento de perfil do usuário logado
+- 🧑‍🔧 Consulta de prestadores com filtros geográficos
 
 ---
 
@@ -19,122 +21,161 @@ API completa desenvolvida com **FastAPI** e **MongoDB**, seguindo boas práticas
 ```
 backend/
 ├── app/
-│   ├── main.py                     # Entrada da aplicação FastAPI
+│   ├── main.py
 │   ├── auth/
-│   │   ├── auth_handler.py         # Lógica JWT e hashing de senhas
-│   │   └── auth_bearer.py          # Middleware para proteger rotas com JWT
+│   │   ├── auth_handler.py          # Criação e verificação de JWT com expiração
+│   │   └── auth_bearer.py           # Middleware de autenticação JWT
 │   ├── database/
-│   │   └── mongo.py                # Conexão com MongoDB via pymongo
+│   │   └── mongo.py                 # Conexão Beanie + Motor (MongoDB async)
 │   ├── models/
-│   │   ├── user.py                 # Modelos de usuário
-│   │   ├── service.py              # Modelos de solicitação de serviço
-│   │   └── prestador.py            # Modelos de prestadores
+│   │   ├── usuario.py               # Modelo base de usuário
+│   │   ├── solicitacao.py           # Modelo de solicitação (Beanie)
+│   │   ├── prestador.py             # Prestador de serviço
+│   │   ├── perfil_desejado.py       # Perfil fiscal, serviço e localização
+│   │   └── localizacao.py           # Submodelo de localização alvo
 │   ├── routes/
-│   │   ├── auth.py                 # Rotas de login e registro
-│   │   ├── services.py             # Rotas de CRUD de serviços
-│   │   ├── profile.py              # Rota para obter perfil logado
-│   │   └── prestador.py            # Rota para consultar prestadores
-└── requirements.txt                # Dependências Python
+│   │   ├── auth.py
+│   │   ├── profile.py
+│   │   ├── prestador.py
+│   │   ├── servico.py
+│   │   └── solicitacao.py
+│   ├── schemas/
+│   │   ├── usuario_schema.py
+│   │   ├── solicitacao_schema.py
+│   │   └── prestador_schema.py
+│   └── services/
+│       └── solicitacao_service.py   # Lógica de negócios da solicitação
+├── seeds/
+│   ├── usuario_seed.py
+│   ├── solicitacao_seed.py
+│   └── data/                        # Dados JSON utilizados pelos seeds
+├── cli.py                           # Script de CLI para rodar seeds
+├── .env                             # Variáveis de ambiente
+└── requirements.txt
 ```
 
 ---
 
-## 🚀 Execução
+## ⚙️ Execução
 
-### 1. Clonar o projeto
+### 1. Clone e entre no projeto
 
 ```bash
-git clone https://github.com/seu-usuario/seu-projeto.git
-cd backend
+git clone https://github.com/seu-usuario/conecta-costura-backend.git
+cd conecta-costura-backend
 ```
 
-### 2. Instalar dependências
+### 2. Instale as dependências
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Configurar variáveis de ambiente
+### 3. Configure o `.env`
 
-Crie um arquivo `.env` com:
-
+```env
+MONGO_URL=mongodb://localhost:27017
+MONGO_DB_NAME=centersew
+SECRET_KEY=sua_chave_supersecreta
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
 ```
-MONGO_URI=mongodb://localhost:27017
-```
 
-### 4. Rodar o servidor
+### 4. Inicie o servidor
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-Acesse: [http://localhost:8000](http://localhost:8000)
+Abra: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ---
 
-## 🔐 Rotas protegidas
+## 🔐 Autenticação
 
-Rotas que exigem autenticação JWT (ex: `/services`, `/profile/me`) devem conter o header:
+- Os tokens JWT têm tempo de expiração (`exp`) e devem ser usados no header:
 
-```
-Authorization: Bearer <seu-token>
+```http
+Authorization: Bearer <token>
 ```
 
 ---
 
-## 🧪 Exemplos de uso (trechos)
+## 🧪 Exemplos de Requisições
 
-### 🔑 Registro/Login
+### 🔑 Registro / Login
 
-```python
+```json
 # POST /auth/register
 {
-  "email": "usuario@exemplo.com",
-  "password": "123456"
+  "nome": "Empresa XPTO",
+  "email": "empresa@xpto.com",
+  "senha": "123456",
+  "tipo": "empresa",
+  "documento": "12.345.678/0001-90",
+  "localizacao": {
+    "cidade": "São Paulo",
+    "estado": "SP",
+    "bairro": "Centro",
+    "tipo": "cidade",
+    "valor": "São Paulo"
+  }
 }
 
 # POST /auth/login
 {
-  "email": "usuario@exemplo.com",
-  "password": "123456"
+  "email": "empresa@xpto.com",
+  "senha": "123456"
 }
 ```
 
-Retorna um token JWT válido para chamadas autenticadas.
-
-### 📋 Criar serviço (POST /services)
+### 📋 Criar solicitação
 
 ```json
+# POST /solicitacoes/
 {
-  "titulo": "Solicitação #001",
-  "subtitulo": "Bordado de logotipo",
-  "descricao": "Aplicação de logotipo em camisas.",
-  "status": "Em andamento"
+  "titulo": "Uniformes para evento",
+  "descricao": "Preciso de 30 camisetas personalizadas com logo bordado",
+  "perfil_desejado": {
+    "tipo_fiscal": ["CPF", "CNPJ"],
+    "tipo_servico": "Bordado de logotipo",
+    "descricao": "Experiência em bordados detalhados",
+    "localizacao_alvo": {
+      "cidade": "São Paulo",
+      "estado": "SP",
+      "bairro": "Bela Vista",
+      "tipo": "bairro",
+      "valor": "Bela Vista"
+    }
+  }
 }
 ```
 
 ---
 
-## 🧰 Tecnologias utilizadas
+## 🧰 Tecnologias
 
 - [FastAPI](https://fastapi.tiangolo.com/)
-- [MongoDB](https://www.mongodb.com/)
-- [PyMongo](https://pymongo.readthedocs.io/)
-- [Passlib](https://passlib.readthedocs.io/) (hash de senhas)
-- JWT com `pyjwt`
+- [MongoDB + Beanie ODM](https://roman-right.github.io/beanie/)
+- [JWT](https://jwt.io/)
+- [Uvicorn](https://www.uvicorn.org/)
+- [Typer](https://typer.tiangolo.com/) (para CLI de seeds)
+- [Pydantic v2](https://docs.pydantic.dev/) com aliases e validação de enums
 
 ---
 
-## 📌 Melhorias futuras
+## 🔍 Organização de código
 
-- Upload de fotos de portfólio dos prestadores  
-- Integração com localização geográfica  
-- Notificações em tempo real  
-- Filtros por tipo de serviço e região  
+- Arquitetura desacoplada com `routes`, `services`, `models`, `schemas`
+- Suporte a múltiplos tipos de usuários (empresa, prestador)
+- Seeds automáticos com JSON estruturado
+- Uso de enums (`TipoServico`, `TipoFiscal`, `TipoLocalizacaoAlvo`) padronizados
 
 ---
 
-## 💡 Observações
+## 📌 Melhorias Futuras
 
-- A API segue boas práticas de separação de responsabilidades (`routes`, `models`, `auth`, `database`)  
-- Rotas estão organizadas por prefixos e tags para facilitar a documentação automática via Swagger (disponível em `/docs`)
+- Match de prestadores baseado em geolocalização
+- Avaliações e comentários
+- Upload de portfólio e imagens
+- Filtros avançados por localização, tipo fiscal e tipo de serviço
