@@ -1,4 +1,4 @@
-# 🧵 Conecta Costura - Backendd
+# 🧵 Conecta Costura - Backend
 
 API robusta em **FastAPI** + **MongoDB** que conecta empresas e prestadores de serviços de costura. Implementa autenticação segura, gerenciamento de solicitações e perfis, com estrutura modular e escalável.
 
