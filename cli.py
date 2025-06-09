@@ -1,9 +1,11 @@
-from seeds.servico_seed import seed_servicos
-from seeds.solicitacao_seed import seed_solicitacoes
-from seeds.usuario_seed import seed_usuarios
-import typer
 import asyncio
 from typing import List
+import typer
+
+from seeds.usuario_seed import seed_usuarios
+from seeds.servico_seed import seed_servicos
+from seeds.solicitacao_seed import seed_solicitacoes
+from seeds.plano_seed import seed_planos
 
 from app.database.mongo import init_mongo
 
@@ -16,7 +18,8 @@ app = typer.Typer()
 SEED_MAP = {
     "usuarios": seed_usuarios,
     "servicos": seed_servicos,
-    "solicitacoes": seed_solicitacoes
+    "solicitacoes": seed_solicitacoes,
+    "planos": seed_planos
 }
 
 @app.command()
@@ -26,7 +29,7 @@ def seed(modulos: List[str] = typer.Argument(None, help="Módulos para popular (
         await init_mongo()
 
         if not modulos:
-            typer.echo("ℹ️  Nenhum módulo informado. Use por exemplo: `python cli.py seed usuarios solicitacoes`")
+            typer.echo("ℹ️  Nenhum módulo informado. Use por exemplo: `python cli.py seed usuarios solicitacoes planos`")
             typer.echo(f"📦 Módulos disponíveis: {', '.join(SEED_MAP.keys())}")
             return
 

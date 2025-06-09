@@ -5,6 +5,7 @@ from app.auth.auth_bearer import JWTBearer
 from app.schemas.solicitacao_schema import SolicitationCreate, SolicitationModel
 from app.services.solicitacao_service import SolicitacaoService
 from app.auth.auth_handler import decode_jwt
+from app.security.rbac import role_required
 
 router = APIRouter()
 
@@ -20,7 +21,8 @@ async def obter_solicitacao(id: str):
 @router.post("/", response_model=SolicitationModel)
 async def criar_solicitacao(
     solicitacao: SolicitationCreate,
-    token=Depends(JWTBearer())
+    token=Depends(JWTBearer()),
+    payload=Depends(role_required(["empresa"]))
 ):
     payload = decode_jwt(token)
     print("====== teste ======")
@@ -28,10 +30,19 @@ async def criar_solicitacao(
     empresa_id = payload.get("sub")
     return await SolicitacaoService.criar(solicitacao, empresa_id)
 
-@router.put("/{id}", response_model=SolicitationModel, dependencies=[Depends(JWTBearer())])
-async def atualizar_solicitacao(id: str, atualizacao: SolicitationCreate):
+@router.put("/{id}", response_model=SolicitationModel)
+async def atualizar_solicitacao(
+    id: str,
+    atualizacao: SolicitationCreate,
+    _=Depends(JWTBearer()),
+    __=Depends(role_required(["empresa"]))  # Apenas empresa pode atualizar
+):
     return await SolicitacaoService.atualizar(id, atualizacao)
 
-@router.delete("/{id}", dependencies=[Depends(JWTBearer())])
-async def deletar_solicitacao(id: str):
+@router.delete("/{id}")
+async def deletar_solicitacao(
+    id: str,
+    _=Depends(JWTBearer()),
+    __=Depends(role_required(["empresa"]))  # Apenas empresa pode deletar
+):
     return await SolicitacaoService.deletar(id)

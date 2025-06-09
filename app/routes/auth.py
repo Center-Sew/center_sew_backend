@@ -1,4 +1,5 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Request, Depends
+from app.extensions.limiter_extension import limiter
 from app.models.usuario import Usuario
 from app.auth.auth_handler import hash_password, verify_password, create_access_token
 from app.schemas.usuario_schema import (  # <- AJUSTE AQUI
@@ -31,7 +32,8 @@ async def register(usuario: UsuarioCreate):
     return novo_usuario.model_dump(by_alias=True)
 
 @router.post("/login", response_model=UsuarioAuthResponse)
-async def login(dados: UsuarioLogin):
+@limiter.limit("5/minute")
+async def login(request: Request, dados: UsuarioLogin):
     usuario = await Usuario.find_one(Usuario.email == dados.email)
     if not usuario or not verify_password(dados.senha, usuario.senha):
         raise HTTPException(
@@ -39,5 +41,9 @@ async def login(dados: UsuarioLogin):
             detail="E-mail ou senha inválidos."
         )
 
-    token = create_access_token({"sub": str(usuario.id)})
+    token = create_access_token({
+        "sub": str(usuario.id),
+        "tipo": usuario.tipo  # 🔐 importante!
+    })
+
     return UsuarioAuthResponse(access_token=token)

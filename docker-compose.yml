@@ -25,4 +25,4 @@ services:
       - .env
     volumes:
       - .:/app
-    command: python cli.py seed usuarios servicos solicitacoes
+    command: python cli.py seed usuarios servicos solicitacoes planos

@@ -1,0 +1,23 @@
+[
+  {
+    "nome": "Básico",
+    "descricao": "Ideal para começar — até 5 solicitações por mês.",
+    "icone": "💼",
+    "preco": "R$ 1,00/mês",
+    "validade": "30 dias"
+  },
+  {
+    "nome": "Recomendado",
+    "descricao": "Mais visibilidade e até 15 solicitações/mês.",
+    "icone": "🚀",
+    "preco": "R$ 1,00/mês",
+    "validade": "30 dias"
+  },
+  {
+    "nome": "Pro",
+    "descricao": "Sem limites, máximo alcance e benefícios premium.",
+    "icone": "👑",
+    "preco": "R$ 1,00/mês",
+    "validade": "30 dias"
+  }
+]
