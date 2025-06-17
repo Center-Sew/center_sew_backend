@@ -6,6 +6,7 @@ class PlanoCreate(BaseModel):
     descricao: str
     icone: str
     preco: str
+    beneficios: list
     validade: str
 
 class PlanoModel(BaseModelWithStrObjectId, PlanoCreate):

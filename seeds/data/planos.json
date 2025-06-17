@@ -1,23 +1,35 @@
 [
   {
     "nome": "Básico",
-    "descricao": "Ideal para começar — até 5 solicitações por mês.",
-    "icone": "💼",
+    "descricao": "Ideal para começar — até 10 solicitações.",
+    "icone": "🏅",
     "preco": "R$ 1,00/mês",
+    "beneficios": [
+      "Criação de até 10 solicitações",
+      "Upload de fotos para descrição da solicitação"
+    ],
     "validade": "30 dias"
   },
   {
     "nome": "Recomendado",
-    "descricao": "Mais visibilidade e até 15 solicitações/mês.",
-    "icone": "🚀",
+    "descricao": "Mais visibilidade e até 20 solicitações.",
+    "icone": "🥈",
     "preco": "R$ 1,00/mês",
+    "beneficios": [
+      "Criação de até 20 solicitações",
+      "Upload de fotos para descrição da solicitação"
+    ],
     "validade": "30 dias"
   },
   {
     "nome": "Pro",
     "descricao": "Sem limites, máximo alcance e benefícios premium.",
-    "icone": "👑",
+    "icone": "🏆",
     "preco": "R$ 1,00/mês",
+    "beneficios": [
+      "Sem limites de criação de solicitações",
+      "Mais Uploads de fotos para descrição da solicitação"
+    ],
     "validade": "30 dias"
   }
 ]

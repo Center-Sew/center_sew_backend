@@ -6,6 +6,7 @@ class Plano(Document):
     descricao: str
     icone: str
     preco: str
+    beneficios: list
     validade: str
 
     class Settings:
