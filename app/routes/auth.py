@@ -6,6 +6,7 @@ from app.schemas.usuario_schema import (  # <- AJUSTE AQUI
     UsuarioAuthResponse,
     UsuarioCreate,
     UsuarioLogin,
+    UsuarioPayload,
     UsuarioResponse,
 )
 
@@ -46,4 +47,14 @@ async def login(request: Request, dados: UsuarioLogin):
         "tipo": usuario.tipo  # 🔐 importante!
     })
 
-    return UsuarioAuthResponse(access_token=token)
+    return UsuarioAuthResponse(
+    access_token=token,
+    user=UsuarioPayload(
+        id=str(usuario.id),
+        nome=usuario.nome,
+        email=usuario.email,
+        tipo=usuario.tipo,
+        documento=usuario.documento,
+        localizacao=usuario.localizacao
+    )
+)
