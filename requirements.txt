@@ -13,3 +13,4 @@ faker
 slowapi>=0.1.9
 pip-audit>=2.4.4
 safety>=2.3.5
+python-multipart

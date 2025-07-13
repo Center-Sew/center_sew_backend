@@ -3,12 +3,10 @@
     "titulo": "Confecção de jalecos hospitalares",
     "subtitulo": "Jalecos personalizados",
     "descricao": "Jalecos com logo bordado para 20 funcionários.",
-    "empresa_id": "empresa@xyz.com",
+    "empresa_id": "68730cef9a697c527d77df58",
     "status": "aberta",
     "perfil_desejado": {
-      "tipo_fiscal": [
-        "CPF"
-      ],
+      "tipo_fiscal": ["CPF"],
       "tipo_servico": "Uniformes hospitalares",
       "descricao": "Costureiras com experiência em roupas médicas.",
       "localizacao_alvo": {
@@ -19,7 +17,7 @@
         "valor": "São Paulo"
       }
     },
-    "interessados": []
+    "interessados": 0
   },
   {
     "titulo": "Aplicação de patches",
@@ -28,9 +26,7 @@
     "empresa_id": "empresa@xyz.com",
     "status": "aberta",
     "perfil_desejado": {
-      "tipo_fiscal": [
-        "CNPJ"
-      ],
+      "tipo_fiscal": ["CNPJ"],
       "tipo_servico": "Aplicação de patches",
       "descricao": "Serviço pontual com entrega em 7 dias.",
       "localizacao_alvo": {
@@ -41,7 +37,7 @@
         "valor": "40"
       }
     },
-    "interessados": []
+    "interessados": 0
   },
   {
     "titulo": "Reparo de jalecos antigos",
@@ -50,10 +46,7 @@
     "empresa_id": "empresa@xyz.com",
     "status": "aberta",
     "perfil_desejado": {
-      "tipo_fiscal": [
-        "CPF",
-        "CNPJ"
-      ],
+      "tipo_fiscal": ["CPF", "CNPJ"],
       "tipo_servico": "Reparo de jaleco",
       "descricao": "Serviço com retirada e entrega em domicílio.",
       "localizacao_alvo": {
@@ -64,7 +57,7 @@
         "valor": "Jardim Itália"
       }
     },
-    "interessados": []
+    "interessados": 0
   },
   {
     "titulo": "Costura de capas para máquinas",
@@ -73,9 +66,7 @@
     "empresa_id": "empresa@xyz.com",
     "status": "aberta",
     "perfil_desejado": {
-      "tipo_fiscal": [
-        "CNPJ"
-      ],
+      "tipo_fiscal": ["CNPJ"],
       "tipo_servico": "Costura de capa para máquina",
       "descricao": "Medidas fornecidas após contato inicial.",
       "localizacao_alvo": {
@@ -86,6 +77,6 @@
         "valor": "Sorocaba"
       }
     },
-    "interessados": []
+    "interessados": 0
   }
 ]

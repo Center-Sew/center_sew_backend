@@ -1,5 +1,5 @@
-from datetime import datetime
-from typing import List
+from datetime import datetime, timezone
+from typing import List, Optional
 from beanie import Document
 from pydantic import Field
 
@@ -12,8 +12,9 @@ class Solicitacao(Document):
     empresa_id: str
     perfil_desejado: PerfilDesejado
     status: str = "aberta"
-    data_criacao: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
-    interessados: List[str] = []
+    data_criacao: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    interessados: int
+    imagens: Optional[List[str]] = []
 
     class Settings:
         name = "solicitacoes"

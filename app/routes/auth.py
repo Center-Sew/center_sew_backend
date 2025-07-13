@@ -35,6 +35,7 @@ async def register(usuario: UsuarioCreate):
 @router.post("/login", response_model=UsuarioAuthResponse)
 @limiter.limit("5/minute")
 async def login(request: Request, dados: UsuarioLogin):
+    print("Chegou aqui")
     usuario = await Usuario.find_one(Usuario.email == dados.email)
     if not usuario or not verify_password(dados.senha, usuario.senha):
         raise HTTPException(

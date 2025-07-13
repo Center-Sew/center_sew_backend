@@ -1,3 +1,4 @@
+from datetime import datetime
 from pydantic import BaseModel, Field, field_validator
 from typing import Optional, List
 from bson import ObjectId
@@ -14,5 +15,6 @@ class SolicitationCreate(BaseModel):
 class SolicitationModel(BaseModelWithStrObjectId, SolicitationCreate):
     empresa_id: str
     status: str
-    data_criacao: str
-    interessados: List[str] = []
+    data_criacao: datetime
+    interessados: int = 0
+    imagens: Optional[List[str]] = []

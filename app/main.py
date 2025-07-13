@@ -11,7 +11,7 @@ from app.extensions.limiter_extension import limiter
 
 from app.middlewares.security_middleware import SecurityMiddleware
 from app.middlewares.audit_log import AuditLogMiddleware
-from app.routes import auth, profile, prestador, servico, solicitacao, plano, webhook
+from app.routes import auth, imagem_routes, profile, prestador, proposta, servico, solicitacao, plano, webhook
 from app.database.mongo import init_mongo
 
 @asynccontextmanager
@@ -49,7 +49,9 @@ app.include_router(profile.router, prefix="/profile", tags=["profile"])
 app.include_router(prestador.router, prefix="/prestador", tags=["prestador"])
 app.include_router(solicitacao.router, prefix="/solicitacoes", tags=["solicitacoes"])
 app.include_router(plano.router, prefix="/planos", tags=["planos"])
+app.include_router(imagem_routes.router)
 app.include_router(webhook.router)
+app.include_router(proposta.router)
 
 @app.get("/")
 def home():
