@@ -1,10 +1,11 @@
+from typing import Literal, Optional, List
 from pydantic import BaseModel, EmailStr
-from typing import Literal
+from app.enums.tipo_fiscal import TipoFiscal
+from app.enums.tipo_servico import TipoServico
 from app.models.localizacao import Localizacao
 from app.schemas.base import BaseModelWithStrObjectId
 
-
-# 🧱 Campos básicos reutilizáveis em várias operações
+# Campos básicos
 class UsuarioBase(BaseModel):
     nome: str
     email: EmailStr
@@ -12,29 +13,33 @@ class UsuarioBase(BaseModel):
     documento: str
     localizacao: Localizacao
 
-
-# 🛠️ Usado no /register
+# Registro de novo usuário
 class UsuarioCreate(UsuarioBase):
     senha: str
 
+    # Campos adicionais para prestador
+    tipo_fiscal: Optional[List[TipoFiscal]] = None
+    especialidades: Optional[List[TipoServico]] = None
+    descricao_portfolio: Optional[str] = None
 
-# 🧾 Usado no /register (resposta com _id)
+    # Campos adicionais para empresa
+    razaosocial: Optional[str] = None
+    segmento: Optional[str] = None
+
+# Resposta simples com ID
 class UsuarioResponse(BaseModelWithStrObjectId, UsuarioBase):
     pass
 
-
-# 🔐 Usado no /login
+# Login
 class UsuarioLogin(BaseModel):
     email: EmailStr
     senha: str
 
-
-# 🧍 Usado para retornar o usuário autenticado no /login
+# Payload do usuário autenticado
 class UsuarioPayload(BaseModelWithStrObjectId, UsuarioBase):
     pass
 
-
-# 🎁 Resposta completa de autenticação
+# Resposta de autenticação
 class UsuarioAuthResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
