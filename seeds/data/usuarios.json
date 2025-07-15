@@ -5,66 +5,98 @@
     "senha": "123456",
     "tipo": "empresa",
     "documento": "12.345.678/0001-00",
+    "telefone": "(11) 4000-1001",
+    "foto": "https://cdn.centersew.com/fotos/alpha.jpg",
     "localizacao": {
+      "endereco": "Rua das Costuras, 123",
       "cidade": "São Paulo",
       "estado": "SP",
       "bairro": "Brás",
+      "latitude": -23.55052,
+      "longitude": -46.63331,
       "tipo": "cidade",
       "valor": "São Paulo"
     }
   },
+
   {
     "nome": "Empresa Confecções Beta",
     "email": "empresa.beta@centersew.com",
     "senha": "123456",
     "tipo": "empresa",
     "documento": "98.765.432/0001-99",
+    "telefone": "(19) 4000-2002",
+    "foto": "https://cdn.centersew.com/fotos/beta.jpg",
     "localizacao": {
+      "endereco": "Av. dos Tecidos, 987",
       "cidade": "Campinas",
       "estado": "SP",
       "bairro": "Centro",
+      "latitude": -22.90556,
+      "longitude": -47.06083,
       "tipo": "cidade",
       "valor": "Campinas"
     }
   },
+
   {
     "nome": "Costureira Joana",
     "email": "joana.costura@centersew.com",
     "senha": "123456",
     "tipo": "prestador",
     "documento": "123.456.789-00",
+    "tipo_fiscal": ["CPF"],
+    "especialidades": ["Ajuste de uniforme", "Bordado de logotipo"],
+    "foto": "https://cdn.centersew.com/fotos/joana.jpg",
     "localizacao": {
+      "endereco": "Rua Alecrim, 45",
       "cidade": "Itapetininga",
       "estado": "SP",
       "bairro": "Vila Nova",
+      "latitude": -23.58833,
+      "longitude": -48.04855,
       "tipo": "raio",
       "valor": "20"
     }
   },
+
   {
     "nome": "Costureiro Paulo",
     "email": "paulo.costura@centersew.com",
     "senha": "123456",
     "tipo": "prestador",
     "documento": "321.654.987-00",
+    "tipo_fiscal": ["CPF"],
+    "especialidades": ["Bainha de calça", "Troca de zíper"],
+    "foto": "https://cdn.centersew.com/fotos/paulo.jpg",
     "localizacao": {
+      "endereco": "Rua das Linhas, 22",
       "cidade": "Itapetininga",
       "estado": "SP",
       "bairro": "Centro",
+      "latitude": -23.59300,
+      "longitude": -48.04860,
       "tipo": "raio",
       "valor": "25"
     }
   },
+
   {
     "nome": "Costureira Maria",
     "email": "maria.costura@centersew.com",
     "senha": "123456",
     "tipo": "prestador",
     "documento": "456.789.123-00",
+    "tipo_fiscal": ["CPF"],
+    "especialidades": ["Costura de cortina", "Aplicação de patches"],
+    "foto": "https://cdn.centersew.com/fotos/maria.jpg",
     "localizacao": {
+      "endereco": "Av. Central, 500",
       "cidade": "Itapetininga",
       "estado": "SP",
       "bairro": "Jardim Itália",
+      "latitude": -23.60010,
+      "longitude": -48.05420,
       "tipo": "raio",
       "valor": "15"
     }

@@ -1,5 +1,5 @@
 from datetime import datetime
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field
 from typing import Optional, List
 from bson import ObjectId
 from app.models.perfil_desejado import PerfilDesejado
@@ -12,8 +12,17 @@ class SolicitationCreate(BaseModel):
     perfil_desejado: PerfilDesejado
 
 
+class UsuarioSlim(BaseModel):
+    id: str
+    nome: str
+    email: str
+    segmento: Optional[str] = None
+    localizacao: Optional[dict] = None
+
+
 class SolicitationModel(BaseModelWithStrObjectId, SolicitationCreate):
-    empresa_id: str
+    usuario_id: str
+    usuario: Optional[UsuarioSlim] = None  # opcional na resposta
     status: str
     data_criacao: datetime
     interessados: int = 0

@@ -11,7 +11,9 @@ class UsuarioBase(BaseModel):
     email: EmailStr
     tipo: Literal["empresa", "prestador", "fornecedor"]
     documento: str
+    telefone: Optional[str] = None
     localizacao: Localizacao
+    foto: Optional[str] = None 
 
 # Registro de novo usuário
 class UsuarioCreate(UsuarioBase):

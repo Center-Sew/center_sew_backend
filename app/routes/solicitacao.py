@@ -1,5 +1,7 @@
+import json
 from fastapi import APIRouter, Depends, Query, Form, File, UploadFile
 from typing import List
+from app.models.perfil_desejado import PerfilDesejado
 from app.schemas.solicitacao_schema import SolicitationModel, SolicitationCreate
 from app.security.rbac import role_required
 from app.services.solicitacao_service import SolicitacaoService
@@ -28,41 +30,28 @@ async def obter_solicitacao(
     return await SolicitacaoService.obter_por_id(id)
 
 
-# 🆕 CRIAR (apenas empresas)
 @router.post("/", response_model=SolicitationModel)
 async def criar_solicitacao(
-    titulo: str = Form(...),
-    descricao: str = Form(...),
-    tipo_fiscal: str = Form(...),
-    tipo_servico: str = Form(...),
-    perfil_descricao: str = Form(...),
-    localizacao_cidade: str = Form(...),
-    localizacao_estado: str = Form(...),
-    localizacao_bairro: str = Form(...),
+    payload: str = Form(...),
     imagens: List[UploadFile] = File(default=[]),
     token_payload: dict = Depends(role_required(["empresa"]))
 ):
+    """
+    Cria uma nova solicitação.
+
+    Corpo da requisição:
+    - payload (str): JSON serializado compatível com o modelo `SolicitationCreate`
+    - imagens (List[UploadFile], opcional): fotos da solicitação
+
+    Requer autenticação de empresa (token JWT com tipo=empresa).
+    """
+    try:
+        dados_dict = json.loads(payload)
+        dados = SolicitationCreate(**dados_dict)
+    except Exception as e:
+        raise ValueError(f"Erro ao decodificar JSON de payload: {e}")
+
     empresa_id = token_payload.get("sub")
-
-    perfil = {
-        "tipo_fiscal": tipo_fiscal.split(","),
-        "tipo_servico": tipo_servico,
-        "descricao": perfil_descricao,
-        "localizacao_alvo": {
-            "cidade": localizacao_cidade,
-            "estado": localizacao_estado,
-            "bairro": localizacao_bairro,
-            "tipo": "cidade",
-            "valor": localizacao_cidade
-        }
-    }
-
-    dados = SolicitationCreate(
-        titulo=titulo,
-        descricao=descricao,
-        perfil_desejado=perfil
-    )
-
     return await SolicitacaoService.criar(dados, empresa_id, imagens)
 
 

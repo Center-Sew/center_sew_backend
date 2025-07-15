@@ -1,3 +1,4 @@
+# seeds/usuario_seed.py
 import json
 from pathlib import Path
 from app.models.usuario import Usuario

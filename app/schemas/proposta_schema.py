@@ -7,6 +7,6 @@ class PropostaCreate(BaseModel):
 
 class PropostaModel(BaseModelWithStrObjectId, PropostaCreate):
     solicitacao_id: str
-    prestador_id: str
+    usuario_id: str
     data_envio: datetime
     status: str

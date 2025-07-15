@@ -1,37 +1,29 @@
-import os
-import pprint
-import shutil
 from typing import List
 from uuid import uuid4
+import os, shutil
+from bson import ObjectId
 from fastapi import HTTPException, UploadFile
+
 from app.core.config import settings
+from app.models.usuario import Usuario
 from app.models.solicitacao import Solicitacao
 from app.schemas.solicitacao_schema import SolicitationCreate, SolicitationModel
 from app.schemas.usuario_schema import UsuarioPayload
 
+
 class SolicitacaoService:
-    from fastapi import Request  # ajuste aqui
-# ...
 
     @staticmethod
-    async def listar(
-        usuario: UsuarioPayload,
-        pagina: int = 1,
-        tamanho: int = 10
-    ) -> List[SolicitationModel]:
+    async def listar(usuario: dict, pagina: int = 1, tamanho: int = 10) -> List[SolicitationModel]:
         skip = (pagina - 1) * tamanho
+        from bson import ObjectId
 
-        tipo_usuario: str = usuario.get("tipo")
-        usuario_id: str = usuario.get("sub") or usuario.get("_id")
+        filtro = {"usuario_id": ObjectId(usuario["sub"])} if usuario["tipo"] == "empresa" else {"status": "aberta"}
 
-        if tipo_usuario == "empresa":
-            filtro = {"empresa_id": usuario_id}
-        elif tipo_usuario == "prestador":
-            filtro = {"status": "aberta"}
-        else:
-            raise HTTPException(status_code=403, detail="Acesso negado ao tipo de usuário.")
+        print("Filtro aplicado:", usuario)
 
-        documentos = (
+
+        docs = (
             await Solicitacao.find(filtro)
             .sort("-data_criacao")
             .skip(skip)
@@ -39,20 +31,26 @@ class SolicitacaoService:
             .to_list()
         )
 
-        solicitacoes = []
-        for doc in documentos:
-            data = doc.dict(by_alias=True)
+        solicitacoes: List[SolicitationModel] = []
+        from app.services.proposta_service import PropostaService
 
-            # Substitui nomes de imagens por URLs acessíveis
-            imagens = data.get("imagens", [])
-            data["imagens"] = [
-                f"{settings.BACKEND_URL}/imagens/{nome}" for nome in imagens
-            ]
+        for doc in docs:
+            print("Sou doc: ", doc)
+            autor = await Usuario.get(doc.usuario_id)
+            if not autor:
+                raise HTTPException(404, "Usuário (autor) não encontrado")
 
-            # Conta interessados únicos
-            from app.services.proposta_service import PropostaService
+            data = doc.model_dump()
+            data["usuario_id"] = str(doc.usuario_id)
+            data["usuario"] = {
+                "id": str(autor.id),
+                "nome": autor.nome,
+                "email": autor.email,
+                "segmento": autor.segmento,
+                "localizacao": autor.localizacao.dict(),
+            }
+            data["imagens"] = [f"{settings.BACKEND_URL}/imagens/{n}" for n in doc.imagens or []]
             data["interessados"] = await PropostaService.contar_interessados_unicos(str(doc.id))
-
             solicitacoes.append(SolicitationModel(**data))
 
         return solicitacoes
@@ -61,61 +59,55 @@ class SolicitacaoService:
     async def obter_por_id(solicitacao_id: str) -> SolicitationModel:
         doc = await Solicitacao.get(solicitacao_id)
         if not doc:
-            raise HTTPException(status_code=404, detail="Solicitação não encontrada")
+            raise HTTPException(404, "Solicitação não encontrada")
 
-        data = doc.dict(by_alias=True)
+        autor = await Usuario.get(doc.usuario_id)
+        if not autor:
+            raise HTTPException(404, "Usuário (autor) não encontrado")
 
-        # Se houver imagens, converte nomes para URLs acessíveis
-        imagens = data.get("imagens", [])
-        data["imagens"] = [
-            f"{settings.BACKEND_URL}/imagens/{nome}" for nome in imagens
-        ]
+        data = doc.model_dump()
+        data["usuario"] = {
+            "id": str(autor.id),
+            "nome": autor.nome,
+            "email": autor.email,
+            "segmento": autor.segmento,
+            "localizacao": autor.localizacao,
+        }
+        data["imagens"] = [f"{settings.BACKEND_URL}/imagens/{n}" for n in doc.imagens or []]
 
         return SolicitationModel(**data)
 
-
     @staticmethod
-    async def criar(
-        dados: SolicitationCreate,
-        empresa_id: str,
-        arquivos: List[UploadFile] = []
-    ) -> SolicitationModel:
-
-        nomes_imagens = []
+    async def criar(dados: SolicitationCreate, usuario_id: str, arquivos: List[UploadFile] = []) -> SolicitationModel:
+        nomes = []
         os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
-
-        for arquivo in arquivos:
-            extensao = os.path.splitext(arquivo.filename)[-1]
-            nome_arquivo = f"{uuid4().hex}{extensao}"
-            caminho = os.path.join(settings.UPLOAD_DIR, nome_arquivo)
-
-            with open(caminho, "wb") as buffer:
-                shutil.copyfileobj(arquivo.file, buffer)
-
-            nomes_imagens.append(nome_arquivo)
+        for arq in arquivos:
+            ext = os.path.splitext(arq.filename)[-1]
+            nome = f"{uuid4().hex}{ext}"
+            with open(os.path.join(settings.UPLOAD_DIR, nome), "wb") as buf:
+                shutil.copyfileobj(arq.file, buf)
+            nomes.append(nome)
 
         nova = Solicitacao(
-            **dados.dict(),
-            empresa_id=empresa_id,
+            **dados.model_dump(),
+            usuario_id=ObjectId(usuario_id),
             status="aberta",
             interessados=0,
-            imagens=nomes_imagens  # ⬅️ salva nomes dos arquivos
+            imagens=nomes
         )
         await nova.insert()
-        return SolicitationModel(**nova.dict(by_alias=True))
 
-    @staticmethod
-    async def atualizar(solicitacao_id: str, atualizacao: SolicitationCreate) -> SolicitationModel:
-        doc = await Solicitacao.get(solicitacao_id)
-        if not doc:
-            raise HTTPException(status_code=404, detail="Solicitação não encontrada")
-        await doc.set(atualizacao.dict())
-        return SolicitationModel(**doc.dict(by_alias=True))
+        print("Funcionou! ", nova)
 
-    @staticmethod
-    async def deletar(solicitacao_id: str):
-        doc = await Solicitacao.get(solicitacao_id)
-        if not doc:
-            raise HTTPException(status_code=404, detail="Solicitação não encontrada")
-        await doc.delete()
-        return {"mensagem": "Solicitação removida com sucesso."}
+        autor = await Usuario.get(nova.usuario_id)
+        return SolicitationModel(
+            **nova.model_dump(exclude={"usuario_id"}),
+            usuario_id=str(nova.usuario_id),
+            usuario={
+                "id": str(autor.id),
+                "nome": autor.nome,
+                "email": autor.email,
+                "segmento": autor.segmento,
+                "localizacao": autor.localizacao.dict() if hasattr(autor.localizacao, "dict") else autor.localizacao,
+            }
+        )
