@@ -1,5 +1,5 @@
 from typing import Literal, Optional, List
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 from app.enums.tipo_fiscal import TipoFiscal
 from app.enums.tipo_servico import TipoServico
 from app.models.localizacao import Localizacao
@@ -12,8 +12,9 @@ class UsuarioBase(BaseModel):
     tipo: Literal["empresa", "prestador", "fornecedor"]
     documento: str
     telefone: Optional[str] = None
+    celular:  Optional[str] = None
     localizacao: Localizacao
-    foto: Optional[str] = None 
+    foto: Optional[str] = Field(default=None, alias="foto_url")
 
 # Registro de novo usuário
 class UsuarioCreate(UsuarioBase):

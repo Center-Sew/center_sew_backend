@@ -14,13 +14,16 @@ async def seed_usuarios():
 
     for entry in data:
         usuario = Usuario(
-            nome=entry["nome"],
-            email=entry["email"],
-            senha=hash_password(entry["senha"]),
-            tipo=entry["tipo"],
-            documento=entry["documento"],
-            localizacao=Localizacao(**entry["localizacao"])
-        )
+        nome=entry["nome"],
+        email=entry["email"],
+        senha=hash_password(entry["senha"]),
+        tipo=entry["tipo"],
+        documento=entry["documento"],
+        telefone=entry.get("telefone"),
+        celular=entry.get("celular"),
+        foto=entry.get("foto"),
+        localizacao=Localizacao(**entry["localizacao"])
+    )
         await usuario.insert()
 
     print("✅ Seed de usuários carregado a partir de arquivo.")

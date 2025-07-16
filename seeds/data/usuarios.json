@@ -6,6 +6,7 @@
     "tipo": "empresa",
     "documento": "12.345.678/0001-00",
     "telefone": "(11) 4000-1001",
+    "celular": "(11) 99999-1234",
     "foto": "https://cdn.centersew.com/fotos/alpha.jpg",
     "localizacao": {
       "endereco": "Rua das Costuras, 123",
@@ -18,7 +19,6 @@
       "valor": "São Paulo"
     }
   },
-
   {
     "nome": "Empresa Confecções Beta",
     "email": "empresa.beta@centersew.com",
@@ -26,6 +26,7 @@
     "tipo": "empresa",
     "documento": "98.765.432/0001-99",
     "telefone": "(19) 4000-2002",
+    "celular": "(11) 99999-4321",
     "foto": "https://cdn.centersew.com/fotos/beta.jpg",
     "localizacao": {
       "endereco": "Av. dos Tecidos, 987",
@@ -38,13 +39,14 @@
       "valor": "Campinas"
     }
   },
-
   {
     "nome": "Costureira Joana",
     "email": "joana.costura@centersew.com",
     "senha": "123456",
     "tipo": "prestador",
     "documento": "123.456.789-00",
+    "telefone": "(15) 4000-3003",
+    "celular": "(15) 98888-1111",
     "tipo_fiscal": ["CPF"],
     "especialidades": ["Ajuste de uniforme", "Bordado de logotipo"],
     "foto": "https://cdn.centersew.com/fotos/joana.jpg",
@@ -59,13 +61,14 @@
       "valor": "20"
     }
   },
-
   {
     "nome": "Costureiro Paulo",
     "email": "paulo.costura@centersew.com",
     "senha": "123456",
     "tipo": "prestador",
     "documento": "321.654.987-00",
+    "telefone": "(15) 4000-4004",
+    "celular": "(15) 97777-2222",
     "tipo_fiscal": ["CPF"],
     "especialidades": ["Bainha de calça", "Troca de zíper"],
     "foto": "https://cdn.centersew.com/fotos/paulo.jpg",
@@ -74,19 +77,20 @@
       "cidade": "Itapetininga",
       "estado": "SP",
       "bairro": "Centro",
-      "latitude": -23.59300,
-      "longitude": -48.04860,
+      "latitude": -23.593,
+      "longitude": -48.0486,
       "tipo": "raio",
       "valor": "25"
     }
   },
-
   {
     "nome": "Costureira Maria",
     "email": "maria.costura@centersew.com",
     "senha": "123456",
     "tipo": "prestador",
     "documento": "456.789.123-00",
+    "telefone": "(15) 4000-5005",
+    "celular": "(15) 96666-3333",
     "tipo_fiscal": ["CPF"],
     "especialidades": ["Costura de cortina", "Aplicação de patches"],
     "foto": "https://cdn.centersew.com/fotos/maria.jpg",
@@ -95,8 +99,8 @@
       "cidade": "Itapetininga",
       "estado": "SP",
       "bairro": "Jardim Itália",
-      "latitude": -23.60010,
-      "longitude": -48.05420,
+      "latitude": -23.6001,
+      "longitude": -48.0542,
       "tipo": "raio",
       "valor": "15"
     }

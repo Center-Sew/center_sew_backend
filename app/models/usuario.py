@@ -13,6 +13,7 @@ class Usuario(Document):
     tipo: Literal["empresa", "prestador", "fornecedor"]
     documento: str
     telefone: Optional[str] = None
+    celular: Optional[str] = None
     localizacao: Localizacao
     foto:   Optional[str] = None
 
@@ -43,6 +44,7 @@ class Usuario(Document):
                 "tipo": "prestador",
                 "documento": "123.456.789-00",
                 "telefone": "(11) 1234-5678",
+                "celular": "(11) 99999-8888",
                 "localizacao": {
                     "cidade": "Itapetininga",
                     "estado": "SP",

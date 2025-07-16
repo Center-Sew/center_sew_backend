@@ -49,7 +49,7 @@ class SolicitacaoService:
                 "segmento": autor.segmento,
                 "localizacao": autor.localizacao.dict(),
             }
-            data["imagens"] = [f"{settings.BACKEND_URL}/imagens/{n}" for n in doc.imagens or []]
+            data["imagens"] = [f"{settings.BACKEND_URL}/imagens/solicitacoes/{n}" for n in doc.imagens or []]
             data["interessados"] = await PropostaService.contar_interessados_unicos(str(doc.id))
             solicitacoes.append(SolicitationModel(**data))
 
@@ -73,19 +73,26 @@ class SolicitacaoService:
             "segmento": autor.segmento,
             "localizacao": autor.localizacao,
         }
-        data["imagens"] = [f"{settings.BACKEND_URL}/imagens/{n}" for n in doc.imagens or []]
+        data["imagens"] = [f"{settings.BACKEND_URL}/imagens/solicitacoes/{n}" for n in doc.imagens or []]
 
         return SolicitationModel(**data)
 
     @staticmethod
     async def criar(dados: SolicitationCreate, usuario_id: str, arquivos: List[UploadFile] = []) -> SolicitationModel:
         nomes = []
-        os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
+
+        # Pasta destino: uploads/imagens/solicitacoes
+        pasta_destino = os.path.join(settings.UPLOAD_DIR, "imagens", "solicitacoes")
+        os.makedirs(pasta_destino, exist_ok=True)
+
         for arq in arquivos:
             ext = os.path.splitext(arq.filename)[-1]
             nome = f"{uuid4().hex}{ext}"
-            with open(os.path.join(settings.UPLOAD_DIR, nome), "wb") as buf:
+
+            caminho_arquivo = os.path.join(pasta_destino, nome)
+            with open(caminho_arquivo, "wb") as buf:
                 shutil.copyfileobj(arq.file, buf)
+
             nomes.append(nome)
 
         nova = Solicitacao(
@@ -96,8 +103,6 @@ class SolicitacaoService:
             imagens=nomes
         )
         await nova.insert()
-
-        print("Funcionou! ", nova)
 
         autor = await Usuario.get(nova.usuario_id)
         return SolicitationModel(

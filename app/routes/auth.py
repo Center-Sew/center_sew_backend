@@ -9,6 +9,11 @@ from app.schemas.usuario_schema import (
     UsuarioPayload,
     UsuarioResponse,
 )
+from utils.helpers import build_foto_url
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(tags=["Autenticação"])
 
@@ -42,6 +47,11 @@ async def register(usuario: UsuarioCreate):
 @limiter.limit("5/minute")
 async def login(request: Request, dados: UsuarioLogin):
     usuario = await Usuario.find_one(Usuario.email == dados.email.lower())
+
+    print("🔍 Usuario encontrado no login:")
+    print({k: v for k, v in usuario.dict().items() if k != "senha"})
+
+
     if not usuario or not verify_password(dados.senha, usuario.senha):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail="E‑mail ou senha inválidos.")
@@ -56,6 +66,9 @@ async def login(request: Request, dados: UsuarioLogin):
             email=usuario.email,
             tipo=usuario.tipo,
             documento=usuario.documento,
-            localizacao=usuario.localizacao
+            telefone=usuario.telefone,
+            celular=usuario.celular,
+            localizacao=usuario.localizacao,
+            foto=build_foto_url(usuario.foto)
         )
     )
