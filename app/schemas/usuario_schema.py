@@ -10,7 +10,7 @@ class UsuarioBase(BaseModel):
     nome: str
     email: EmailStr
     tipo: Literal["empresa", "prestador", "fornecedor"]
-    documento: str
+    tipo_fiscal: Optional[List[TipoFiscal]] = None
     telefone: Optional[str] = None
     celular:  Optional[str] = None
     localizacao: Localizacao

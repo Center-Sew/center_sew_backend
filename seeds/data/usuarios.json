@@ -7,7 +7,7 @@
     "documento": "12.345.678/0001-00",
     "telefone": "(11) 4000-1001",
     "celular": "(11) 99999-1234",
-    "foto": "https://cdn.centersew.com/fotos/alpha.jpg",
+    "foto": "alpha.jpg",
     "localizacao": {
       "endereco": "Rua das Costuras, 123",
       "cidade": "São Paulo",

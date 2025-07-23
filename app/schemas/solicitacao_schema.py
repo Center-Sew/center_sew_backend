@@ -18,6 +18,7 @@ class UsuarioSlim(BaseModel):
     email: str
     segmento: Optional[str] = None
     localizacao: Optional[dict] = None
+    foto: Optional[str] = None
 
 
 class SolicitationModel(BaseModelWithStrObjectId, SolicitationCreate):

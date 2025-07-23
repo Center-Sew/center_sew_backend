@@ -1,5 +1,5 @@
 # app/routes/proposta.py
-from fastapi import APIRouter, Depends, Path
+from fastapi import APIRouter, Depends, HTTPException, Path
 from app.schemas.proposta_schema import PropostaCreate, PropostaModel
 from app.security.rbac import role_required
 from app.services.proposta_service import PropostaService
@@ -26,6 +26,16 @@ async def listar_propostas(
     return await PropostaService.listar_por_solicitacao(id)
 
 
+# Listar apenas a proposta do usuário logado para essa solicitação
+@router.get("/minha", response_model=list[PropostaModel])
+async def get_minha_proposta(
+    id: str = Path(..., description="ID da solicitação"),
+    token = Depends(role_required(["prestador"]))
+):
+    usuario_id = token.get("sub")
+    return await PropostaService.buscar_propostas_do_usuario(id, usuario_id)
+
+
 # Aceitar proposta (usuário que criou a solicitação)
 @router.post("/{proposta_id}/aceitar")
 async def aceitar_proposta(
@@ -35,3 +45,16 @@ async def aceitar_proposta(
 ):
     usuario_id = token.get("sub")
     return await PropostaService.aceitar_proposta(id, proposta_id, usuario_id)
+
+
+@router.post("/{proposta_id}/rejeitar")
+async def rejeitar_proposta(
+    id: str = Path(..., description="ID da solicitação"),
+    proposta_id: str = Path(..., description="ID da proposta"),
+    token = Depends(role_required(["empresa"]))
+):
+    return await PropostaService.rejeitar_proposta(
+        solicitacao_id=id,
+        proposta_id=proposta_id,
+        usuario_id=token["sub"]
+    )

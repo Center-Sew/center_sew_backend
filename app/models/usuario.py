@@ -11,7 +11,6 @@ class Usuario(Document):
     email: Annotated[EmailStr, Indexed()]
     senha: str
     tipo: Literal["empresa", "prestador", "fornecedor"]
-    documento: str
     telefone: Optional[str] = None
     celular: Optional[str] = None
     localizacao: Localizacao

@@ -26,8 +26,7 @@ async def register(usuario: UsuarioCreate):
         nome=usuario.nome,
         email=usuario.email.lower(),
         senha=hash_password(usuario.senha),
-        tipo=usuario.tipo,                      # "empresa" | "prestador" | "fornecedor"
-        documento=usuario.documento,
+        tipo=usuario.tipo, # "empresa" | "prestador" | "fornecedor"
         telefone=usuario.telefone,
         localizacao=usuario.localizacao,
         foto=usuario.foto,
@@ -65,7 +64,7 @@ async def login(request: Request, dados: UsuarioLogin):
             nome=usuario.nome,
             email=usuario.email,
             tipo=usuario.tipo,
-            documento=usuario.documento,
+            tipo_fiscal=usuario.tipo_fiscal,
             telefone=usuario.telefone,
             celular=usuario.celular,
             localizacao=usuario.localizacao,

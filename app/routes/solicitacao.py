@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, Query, Form, File, UploadFile
 from typing import List
 from app.models.perfil_desejado import PerfilDesejado
 from app.schemas.solicitacao_schema import SolicitationModel, SolicitationCreate
+from app.schemas.usuario_schema import UsuarioPayload
 from app.security.rbac import role_required
 from app.services.solicitacao_service import SolicitacaoService
 from app.auth.auth_bearer import JWTBearer
@@ -65,10 +66,9 @@ async def atualizar_solicitacao(
     return await SolicitacaoService.atualizar(id, atualizacao)
 
 
-# ❌ DELETAR (apenas empresa)
 @router.delete("/{id}")
 async def deletar_solicitacao(
     id: str,
     token_payload: dict = Depends(role_required(["empresa"]))
 ):
-    return await SolicitacaoService.deletar(id)
+    return await SolicitacaoService.deletar(id, token_payload["sub"])
