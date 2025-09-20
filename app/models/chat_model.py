@@ -5,7 +5,8 @@ from typing import Optional
 from bson import ObjectId
 
 class MensagemChat(Document):
-    proposta_id: ObjectId
+    proposta_id: Optional[ObjectId] = None
+    servico_id: Optional[ObjectId] = None
     remetente_id: ObjectId
     destinatario_id: ObjectId
     texto: str

@@ -2,6 +2,7 @@ import asyncio
 from typing import List
 import typer
 
+from seeds.categoria_servico_seed import seed_categorias_servico
 from seeds.usuario_seed import seed_usuarios
 from seeds.servico_seed import seed_servicos
 from seeds.solicitacao_seed import seed_solicitacoes
@@ -19,6 +20,7 @@ SEED_MAP = {
     "usuarios": seed_usuarios,
     "servicos": seed_servicos,
     "solicitacoes": seed_solicitacoes,
+    "categorias_servico": seed_categorias_servico,
     "planos": seed_planos
 }
 

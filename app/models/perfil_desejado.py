@@ -2,12 +2,11 @@ from typing import List, Literal, Optional
 from pydantic import BaseModel
 
 from app.enums.tipo_fiscal import TipoFiscal
-from app.enums.tipo_servico import TipoServico
 from app.models.localizacao import Localizacao
 
 
 class PerfilDesejado(BaseModel):
     tipo_fiscal: List[TipoFiscal]
-    tipo_servico: TipoServico
+    tipo_servico: str
     descricao: str
     localizacao_alvo: Optional[Localizacao]

@@ -1,0 +1,32 @@
+[
+  {
+    "nome": "Costura Blusa",
+    "tipo": "costura",
+    "subcategorias": ["Blusas pluz", "Blusas adulto", "Blusas juvenil", "Blusas infantil"]
+  },
+  {
+    "nome": "Costura Bermuda",
+    "tipo": "costura",
+    "subcategorias": ["Bermuda pluz", "Bermuda adulto", "Bermuda juvenil", "Bermuda infantil"]
+  },
+  {
+    "nome": "Costura Shorts",
+    "tipo": "costura",
+    "subcategorias": ["Shorts pluz", "Shorts adulto", "Shorts juvenil", "Shorts infantil"]
+  },
+  {
+    "nome": "Estamparia",
+    "tipo": "estamparia",
+    "subcategorias": ["Silk", "Sublimação", "DTF", "Bordado computadorizado"]
+  },
+  {
+    "nome": "Talhação",
+    "tipo": "talhacao",
+    "subcategorias": ["Corte manual", "Corte automatizado", "Molde digital", "Encaixe industrial"]
+  },
+  {
+    "nome": "Apliques",
+    "tipo": "apliques",
+    "subcategorias": ["Strass", "Patches", "Botões", "Bordados"]
+  }
+]

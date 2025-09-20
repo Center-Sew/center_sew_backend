@@ -25,4 +25,4 @@ services:
       - .env
     volumes:
       - .:/app
-    command: python cli.py seed empresas usuarios servicos planos  # Adicionar se precisar: solicitacoes
+    command: python cli.py seed empresas usuarios planos categorias_servico  # Adicionar se precisar: solicitacoes

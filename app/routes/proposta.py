@@ -1,4 +1,5 @@
 # app/routes/proposta.py
+from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Path
 from app.schemas.proposta_schema import PropostaCreate, PropostaModel
 from app.security.rbac import role_required
@@ -23,17 +24,19 @@ async def listar_propostas(
     id: str,
     token = Depends(role_required(["empresa", "prestador"]))
 ):
-    return await PropostaService.listar_por_solicitacao(id)
+    usuario_id = token.get("sub")
+    return await PropostaService.listar_por_solicitacao(id, usuario_id)
 
 
 # Listar apenas a proposta do usuário logado para essa solicitação
-@router.get("/minha", response_model=list[PropostaModel])
+@router.get("/minha", response_model=List[PropostaModel])
 async def get_minha_proposta(
     id: str = Path(..., description="ID da solicitação"),
     token = Depends(role_required(["prestador"]))
 ):
-    usuario_id = token.get("sub")
-    return await PropostaService.buscar_propostas_do_usuario(id, usuario_id)
+    prestador_id = token.get("sub")
+    # ✅ chama o método novo
+    return await PropostaService.buscar_propostas_do_prestador(id, prestador_id)
 
 
 # Aceitar proposta (usuário que criou a solicitação)

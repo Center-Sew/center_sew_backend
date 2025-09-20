@@ -1,14 +1,14 @@
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, Field
+from bson import ObjectId
+from pydantic import BaseModel, Field, field_serializer
 
-class ProdutoSchema(BaseModel):
-    nome: str
-    quantidade: int
-    detalhes: Optional[str] = None
+from app.schemas.produto_schema import ProdutoSchema
+from app.schemas.usuario_schema import UsuarioResponse  # ← nova importação
 
 class ServicoCreate(BaseModel):
     solicitacao_id: str
+    empresa_id: str
     prestador_id: str
     produto: ProdutoSchema
     inicio: datetime
@@ -16,8 +16,14 @@ class ServicoCreate(BaseModel):
 
 class ServicoResponse(ServicoCreate):
     id: str = Field(alias="_id")
-    empresa_id: str
     status: str
+    titulo_solicitacao: Optional[str] = None
+    empresa: UsuarioResponse
+    prestador: UsuarioResponse
+
+    @field_serializer('id')
+    def serialize_object_id(self, value: ObjectId, _info):
+        return str(value)
 
     class Config:
         validate_by_name = True

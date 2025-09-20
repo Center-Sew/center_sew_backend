@@ -15,7 +15,7 @@ from app.extensions.limiter_extension import limiter
 from app.middlewares.security_middleware import SecurityMiddleware
 from app.middlewares.audit_log import AuditLogMiddleware
 from app.routes import (
-    auth, chat_routes, imagem_routes, profile, prestador, proposta, servico,
+    auth, categoria_servico, chat_routes, imagem_routes, profile, prestador, proposta, servico,
     solicitacao, plano, webhook, usuario_router
 )
 from app.database.mongo import init_mongo
@@ -74,6 +74,7 @@ app.include_router(servico.router, prefix="/services", tags=["services"])
 app.include_router(profile.router, prefix="/profile", tags=["profile"])
 app.include_router(prestador.router, prefix="/prestador", tags=["prestador"])
 app.include_router(solicitacao.router, prefix="/solicitacoes", tags=["solicitacoes"])
+app.include_router(categoria_servico.router, prefix="/categorias-servico", tags=["categorias-servico"])
 app.include_router(plano.router, prefix="/planos", tags=["planos"])
 app.include_router(usuario_router.router, tags=["usuarios"])
 app.include_router(imagem_routes.router)

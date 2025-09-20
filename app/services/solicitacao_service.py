@@ -9,6 +9,7 @@ from app.models.usuario import Usuario
 from app.models.solicitacao import Solicitacao
 from app.schemas.solicitacao_schema import SolicitationCreate, SolicitationModel
 from app.schemas.usuario_schema import UsuarioPayload
+from app.services.proposta_service import PropostaService
 
 
 class SolicitacaoService:
@@ -16,14 +17,13 @@ class SolicitacaoService:
     @staticmethod
     async def listar(usuario: dict, pagina: int = 1, tamanho: int = 10) -> List[SolicitationModel]:
         skip = (pagina - 1) * tamanho
-        from bson import ObjectId
-        from app.services.proposta_service import PropostaService
 
         filtro = {}
 
         if usuario["tipo"] == "empresa":
             # Empresa visualiza as próprias solicitações
-            filtro = {"usuario_id": ObjectId(usuario["sub"])}
+            filtro = {"usuario_id": ObjectId(usuario["sub"]),
+                "proposta_aceita": False}
         elif usuario["tipo"] == "prestador":
             # Prestador visualiza solicitações abertas, compatíveis com seu tipo_fiscal
             usuario_model = await Usuario.get(ObjectId(usuario["sub"]))
@@ -36,13 +36,12 @@ class SolicitacaoService:
                 "status": "aberta",
                 "perfil_desejado.tipo_fiscal": {
                     "$in": usuario_model.tipo_fiscal
-                }
+                },
+                "proposta_aceita": False
             }
         else:
             # Outros tipos de usuário não visualizam nada
             return []
-
-        print("Filtro aplicado:", filtro)
 
         docs = (
             await Solicitacao.find(filtro)
@@ -107,22 +106,28 @@ class SolicitacaoService:
 
     @staticmethod
     async def criar(dados: SolicitationCreate, usuario_id: str, arquivos: List[UploadFile] = []) -> SolicitationModel:
-        nomes = []
+        # Verifica se o usuário existe
+        autor = await Usuario.get(ObjectId(usuario_id))
+        if not autor:
+            print("Não existe: ", usuario_id)
+            raise HTTPException(status_code=404, detail="Usuário (empresa) não encontrado")
 
-        # Pasta destino: uploads/imagens/solicitacoes
+        # Salva imagens
+        nomes = []
         pasta_destino = os.path.join(settings.UPLOAD_DIR, "imagens", "solicitacoes")
         os.makedirs(pasta_destino, exist_ok=True)
 
         for arq in arquivos:
             ext = os.path.splitext(arq.filename)[-1]
             nome = f"{uuid4().hex}{ext}"
-
             caminho_arquivo = os.path.join(pasta_destino, nome)
+
             with open(caminho_arquivo, "wb") as buf:
                 shutil.copyfileobj(arq.file, buf)
 
             nomes.append(nome)
 
+        # Cria nova solicitação
         nova = Solicitacao(
             **dados.model_dump(),
             usuario_id=ObjectId(usuario_id),
@@ -132,7 +137,7 @@ class SolicitacaoService:
         )
         await nova.insert()
 
-        autor = await Usuario.get(nova.usuario_id)
+        # Retorna com os dados do autor
         return SolicitationModel(
             **nova.model_dump(exclude={"usuario_id"}),
             usuario_id=str(nova.usuario_id),
@@ -144,6 +149,7 @@ class SolicitacaoService:
                 "localizacao": autor.localizacao.dict() if hasattr(autor.localizacao, "dict") else autor.localizacao,
             }
         )
+
     
     @staticmethod
     async def deletar(solicitacao_id: str, usuario_id: str):
